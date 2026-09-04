@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  rag-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: laser-focused-rag:latest
+    ports:
+      - "8000:8000"
+    environment:
+      # GOOGLE_API_KEY はホストマシンの環境変数、または .env ファイルから読み込みます
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    volumes:
+      # ChromaDBの永続化データをマウント
+      - ./chroma_db:/app/chroma_db
+    restart: unless-stopped
+    # リソース制限（古いノートPCでの安全な動作を保証）
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
